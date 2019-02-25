@@ -28,6 +28,7 @@ import 'url-search-params-polyfill';
 
 // Extensions
 import devConsoleRoutes from '../extend/devconsole/routes';
+import PerspectiveSwitcher from '../extend/devconsole/shared/components/PerspectiveSwitcher';
 
 class App extends React.PureComponent {
   constructor(props) {
@@ -40,7 +41,7 @@ class App extends React.PureComponent {
     this.previousDesktopState = this._isDesktop();
 
     this.state = {
-      isNavOpen: this._isDesktop(),
+      isNavOpen: false,
     };
   }
 
@@ -106,13 +107,17 @@ class App extends React.PureComponent {
 
     return (
       <React.Fragment>
+        <PerspectiveSwitcher
+          isNavOpen={isNavOpen}
+          onNavToggle={this._onNavToggle}
+        />
         <Helmet
           titleTemplate={`%s · ${productName}`}
           defaultTitle={productName}
         />
         <Page
           header={<Masthead onNavToggle={this._onNavToggle} />}
-          sidebar={<Navigation isNavOpen={isNavOpen} onNavSelect={this._onNavSelect} />}
+          sidebar={<Navigation isNavOpen={true} onNavSelect={this._onNavSelect} />}
         >
           <AppContents />
         </Page>
