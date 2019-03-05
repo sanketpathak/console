@@ -101,6 +101,10 @@ class App extends React.PureComponent {
     }
   }
 
+  _sidebarNav() {
+    return ((this.props.location.pathname).startsWith('/devops')) ? <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} /> : <Navigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
+  }
+
   render() {
     const { isNavOpen } = this.state;
     const { productName } = getBrandingDetails();
@@ -117,7 +121,7 @@ class App extends React.PureComponent {
         />
         <Page
           header={<Masthead onNavToggle={this._onNavToggle} />}
-          sidebar={<Navigation isNavOpen={true} onNavSelect={this._onNavSelect} />}
+          sidebar={this._sidebarNav()}
         >
           <AppContents />
         </Page>
