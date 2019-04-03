@@ -106,7 +106,12 @@ class App extends React.PureComponent {
   }
 
   _sidebarNav() {
-    return ((this.props.location.pathname).startsWith('/devops')) ? <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} /> : <Navigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
+    switch (this.props.activePerspective) {
+      case 'dev':
+        return <DevConsoleNavigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
+      default:
+        return <Navigation isNavOpen={true} onNavSelect={this._onNavSelect} />;
+    }
   }
 
   render() {
@@ -124,7 +129,7 @@ class App extends React.PureComponent {
           defaultTitle={productName}
         />
         <Page
-          header={<Masthead onNavToggle={this._onNavToggle} />}
+          header={<Masthead defaultRoute={defaultRoute} onNavToggle={this._onNavToggle} />}
           sidebar={this._sidebarNav()}
         >
           <AppContents />
@@ -199,7 +204,10 @@ if ('serviceWorker' in navigator) {
       .catch(e => console.warn('Error unregistering service workers', e));
   }
 }
-const AppComponent = connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(App);
+const AppComponent = connect(mapPerspectiveStateToProps)(
+  connectToFlags(FLAGS.SHOW_DEV_CONSOLE)(App)
+);
+
 render((
   <Provider store={store}>
     <Router history={history} basename={window.SERVER_FLAGS.basePath}>
