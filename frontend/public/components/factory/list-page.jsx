@@ -3,7 +3,7 @@ import * as classNames from 'classnames';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import PerspectiveLink from '../../extend/devconsole/shared/components/PerspectiveLink';
 
 import { KEYBOARD_SHORTCUTS } from '../../const';
 import { filterList } from '../../actions/k8s';

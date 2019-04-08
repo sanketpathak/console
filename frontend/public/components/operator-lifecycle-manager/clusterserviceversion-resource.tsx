@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link, match } from 'react-router-dom';
+import { match } from 'react-router-dom';
 import * as _ from 'lodash-es';
 import { connect } from 'react-redux';
 import * as classNames from 'classnames';

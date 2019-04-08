@@ -28,6 +28,7 @@ import 'url-search-params-polyfill';
 // Extensions
 import devConsoleRoutes from '../extend/devconsole/routes';
 import PerspectiveSwitcher from '../extend/devconsole/shared/components/PerspectiveSwitcher';
+import { pathWithPerspective } from './utils/perspective';
 
 // Extensions
 import devConsoleRoutes from '../extend/devconsole/routes';
@@ -130,6 +131,10 @@ class App extends React.PureComponent {
     );
   }
 
+  _prependActivePerspective(path) {
+    return pathWithPerspective(this.props.activePerspective, path);
+  }
+
   render() {
     const { isNavOpen } = this.state;
     const { productName } = getBrandingDetails();
@@ -144,7 +149,7 @@ class App extends React.PureComponent {
           header={
             <Masthead
               isPerspectiveSwitcherActive={devconsoleEnabled}
-              defaultRoute={defaultRoute}
+              defaultRoute={this._prependActivePerspective('/')}
               isNavOpen={isPerspectiveSwitcherOpen}
               onNavToggle={this._onNavToggle}
             />

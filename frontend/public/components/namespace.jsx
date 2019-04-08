@@ -4,7 +4,6 @@ import * as classNames from 'classnames';
 import { sortable } from '@patternfly/react-table';
 import { connect } from 'react-redux';
 import { Tooltip } from './utils/tooltip';
-import { Link } from 'react-router-dom';
 import * as fuzzy from 'fuzzysearch';
 
 import { NamespaceModel, ProjectModel, SecretModel } from '../models';
@@ -279,7 +278,7 @@ export const NamespaceSummary = ({ns}) => {
         </React.Fragment>}
         <dt>Network Policies</dt>
         <dd>
-          <Link to={`/k8s/ns/${ns.metadata.name}/networkpolicies`}>Network Policies</Link>
+          <PerspectiveLink to={`/k8s/ns/${ns.metadata.name}/networkpolicies`}>Network Policies</PerspectiveLink>
         </dd>
       </dl>
     </div>
@@ -303,10 +302,11 @@ const autocompleteFilter = (text, item) => fuzzy(text, item);
 const defaultBookmarks = {};
 
 const namespaceBarDropdownStateToProps = state => {
-  const activeNamespace = state.UI.get('activeNamespace');
-  const canListNS = state[featureReducerName].get(FLAGS.CAN_LIST_NS);
-
-  return { activeNamespace, canListNS };
+  return {
+    activeNamespace: state.UI.get('activeNamespace'),
+    activePerspective: getActivePerspective(state),
+    canListNS: state[featureReducerName].get(FLAGS.CAN_LIST_NS),
+  };
 };
 const namespaceBarDropdownDispatchToProps = (dispatch) => ({
   showStartGuide: (show) => dispatch(setFlag(FLAGS.SHOW_OPENSHIFT_START_GUIDE, show)),

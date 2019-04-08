@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { shallow, ShallowWrapper, mount, ReactWrapper } from 'enzyme';
-import { Link } from 'react-router-dom';
 import * as _ from 'lodash-es';
 
 import { ClusterServiceVersionsDetailsPage, ClusterServiceVersionsDetailsPageProps, ClusterServiceVersionDetails, ClusterServiceVersionDetailsProps, ClusterServiceVersionsPage, ClusterServiceVersionsPageProps, ClusterServiceVersionList, ClusterServiceVersionTableHeader, ClusterServiceVersionTableRow, ClusterServiceVersionTableRowProps, CRDCard, CRDCardRow } from '../../../public/components/operator-lifecycle-manager/clusterserviceversion';
@@ -12,6 +11,7 @@ import { referenceForModel } from '../../../public/module/k8s';
 import { ClusterServiceVersionModel } from '../../../public/models';
 
 import * as operatorLogo from '../../../public/imgs/operator.svg';
+import PerspectiveLink from '../../../public/extend/devconsole/shared/components/PerspectiveLink';
 
 describe(ClusterServiceVersionTableHeader.displayName, () => {
   it('returns column header definition for cluster service version table header', () => {
@@ -43,8 +43,8 @@ describe(ClusterServiceVersionTableRow.displayName, () => {
   it('renders clickable column for app logo and name', () => {
     const col = wrapper.find(TableRow).childAt(0);
 
-    expect(col.find(Link).props().to).toEqual(`/k8s/ns/${testClusterServiceVersion.metadata.namespace}/${ClusterServiceVersionModel.plural}/${testClusterServiceVersion.metadata.name}`);
-    expect(col.find(Link).find(ClusterServiceVersionLogo).exists()).toBe(true);
+    expect(col.find(PerspectiveLink).props().to).toEqual(`/k8s/ns/${testClusterServiceVersion.metadata.namespace}/${ClusterServiceVersionModel.plural}/${testClusterServiceVersion.metadata.name}`);
+    expect(col.find(PerspectiveLink).find(ClusterServiceVersionLogo).exists()).toBe(true);
   });
 
   it('renders column for app namespace link', () => {
@@ -78,8 +78,8 @@ describe(ClusterServiceVersionTableRow.displayName, () => {
   it('renders column with each CRD provided by the Operator', () => {
     const col = wrapper.find(TableRow).childAt(4);
     testClusterServiceVersion.spec.customresourcedefinitions.owned.forEach((desc, i) => {
-      expect(col.find(Link).at(i).props().title).toEqual(desc.name);
-      expect(col.find(Link).at(i).props().to).toEqual(`/k8s/ns/default/clusterserviceversions/testapp/${referenceForProvidedAPI(desc)}`);
+      expect(col.find(PerspectiveLink).at(i).props().title).toEqual(desc.name);
+      expect(col.find(PerspectiveLink).at(i).props().to).toEqual(`/k8s/ns/default/clusterserviceversions/testapp/${referenceForProvidedAPI(desc)}`);
     });
   });
 });
@@ -166,7 +166,7 @@ describe(CRDCard.displayName, () => {
   it('does not render link to create new instance if `props.canCreate` is false', () => {
     const wrapper = shallow(<CRDCard canCreate={false} crd={crd} csv={testClusterServiceVersion} />);
 
-    expect(wrapper.find('.co-crd-card__footer').find(Link).exists()).toBe(false);
+    expect(wrapper.find('.co-crd-card__footer').find(PerspectiveLink).exists()).toBe(false);
   });
 });
 

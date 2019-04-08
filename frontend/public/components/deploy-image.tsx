@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as _ from 'lodash-es';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
 
 import { FieldLevelHelp } from 'patternfly-react';
 import { getPorts } from './source-to-image';
@@ -24,6 +23,7 @@ import {
   ImageStreamImportsModel,
   ServiceModel,
 } from '../models';
+import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
 
 const getSuggestedName = name => {
   if (!name) {
@@ -425,7 +425,7 @@ export class DeployImage extends React.Component<DeployImageProps, DeployImageSt
           </div>
           <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
             <button type="submit" className="btn btn-primary" disabled={!this.state.namespace || !this.state.imageName || !this.state.name}>Deploy</button>
-            <Link to={formatNamespacedRouteForResource('deploymentconfigs')} className="btn btn-default">Cancel</Link>
+            <PerspectiveLink to={formatNamespacedRouteForResource('deploymentconfigs')} className="btn btn-default">Cancel</PerspectiveLink>
           </ButtonBar>
         </form>
       </div>

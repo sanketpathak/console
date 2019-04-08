@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link, match as RouterMatch } from 'react-router-dom';
+import { match as RouterMatch } from 'react-router-dom';
 import * as _ from 'lodash-es';
 import { connect } from 'react-redux';
 import { Alert } from 'patternfly-react';
@@ -41,6 +41,7 @@ import {
   ExternalLink,
 } from '../utils';
 import { operatorGroupFor, operatorNamespaceFor } from './operator-group';
+import PerspectiveLink from '../../extend/devconsole/shared/components/PerspectiveLink';
 
 const tableColumnClasses = [
   classNames('col-lg-3', 'col-md-4', 'col-sm-4', 'col-xs-6'),
@@ -173,7 +174,7 @@ export const CRDCard: React.SFC<CRDCardProps> = (props) => {
     { canCreate && <div className="co-crd-card__footer">
       <Link className="co-crd-card__link" to={createRoute()}>
         <span className="pficon pficon-add-circle-o" aria-hidden="true"></span> Create New
-      </Link>
+      </PerspectiveLink>
     </div> }
   </div>;
 };
