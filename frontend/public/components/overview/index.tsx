@@ -326,9 +326,9 @@ const sortBuilds = (builds: K8sResourceKind[]): K8sResourceKind[] => {
 
 const OverviewItemReadiness: React.SFC<OverviewItemReadinessProps> = ({desired = 0, ready = 0, resource}) => {
   const href = `${resourceObjPath(resource, resource.kind)}/pods`;
-  return <Link to={href}>
+  return <PerspectiveLink to={href}>
     {ready} of {desired} pods
-  </Link>;
+  </PerspectiveLink>;
 };
 
 const OverviewEmptyState = () => <EmptyBox label="Workloads" />;

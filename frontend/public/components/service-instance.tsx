@@ -23,9 +23,11 @@ import { Conditions } from './conditions';
 import { ServiceCatalogParameters, ServiceCatalogParametersSecrets } from './service-catalog-parameters';
 import { ServiceBindingsPage } from './service-binding';
 import { ServiceBindingModel, ServiceInstanceModel, ClusterServiceClassModel } from '../models';
+import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
+import { pathWithPerspectiveFromStore } from './utils/perspective';
 
 const goToCreateBindingPage = (serviceInstance: K8sResourceKind) => {
-  history.push(`/k8s/ns/${serviceInstance.metadata.namespace}/serviceinstances/${serviceInstance.metadata.name}/create-binding`);
+  history.push(pathWithPerspectiveFromStore(`/k8s/ns/${serviceInstance.metadata.namespace}/serviceinstances/${serviceInstance.metadata.name}/create-binding`));
 };
 
 const createBinding = (kindObj, serviceInstance) => {
@@ -91,7 +93,7 @@ class ServiceInstanceMessage_ extends React.Component<ServiceInstanceMessageProp
         <i className="pficon pficon-warning-triangle-o" aria-hidden="true" />
         This service instance is marked for deletion, but still has bindings.
         You must delete the bindings before the instance will be deleted.&nbsp;&nbsp;
-        <Link to={`${basePath}/servicebindings`}>View Service Bindings</Link>
+        <PerspectiveLink to={`${basePath}/servicebindings`}>View Service Bindings</PerspectiveLink>
       </p>;
     }
 

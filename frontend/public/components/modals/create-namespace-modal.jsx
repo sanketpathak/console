@@ -19,11 +19,17 @@ const defaultDeny = {
   },
 };
 
+const mapStateToProps = state => {
+  return {
+    activePerspective: getActivePerspective(state),
+  };
+};
+
 const mapDispatchToProps = dispatch => ({
   hideStartGuide: () => setFlag(dispatch, FLAGS.SHOW_OPENSHIFT_START_GUIDE, false),
 });
 
-const CreateNamespaceModal = connect(null, mapDispatchToProps)(class CreateNamespaceModal extends PromiseComponent {
+const CreateNamespaceModal = connect(mapStateToProps, mapDispatchToProps)(class CreateNamespaceModal extends PromiseComponent {
   constructor(props) {
     super(props);
     this.state.np = allow;
@@ -70,7 +76,7 @@ const CreateNamespaceModal = connect(null, mapDispatchToProps)(class CreateNames
 
   _submit(event) {
     event.preventDefault();
-    const { createProject, close } = this.props;
+    const { activePerspective, createProject, close } = this.props;
 
     let promise = createProject ? this.createProject() : this.createNamespace();
     if (this.state.np === deny) {
