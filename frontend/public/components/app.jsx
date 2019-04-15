@@ -121,7 +121,7 @@ class App extends React.PureComponent {
       this.props.flags.SHOW_DEV_CONSOLE &&
       this.props.activePerspective === 'dev'
     ) {
-      return <DevConsoleNavigation isNavOpen={true} />;
+      return <DevConsoleNavigation isNavOpen={this.state.isNavOpen} />;
     }
     return (
       <Navigation
