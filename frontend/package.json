@@ -102,6 +102,7 @@
     "react-linkify": "^0.2.2",
     "react-measure": "^2.2.6",
     "react-modal": "3.x",
+    "react-motion": "^0.5.2",
     "react-redux": "5.x",
     "react-router-dom": "4.3.x",
     "react-tagsinput": "3.19.x",
