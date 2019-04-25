@@ -38,6 +38,7 @@ import {
   getTemplateInstanceStatus,
   getNodeRoles,
 } from '../../module/k8s';
+import { pipelineFilterReducer, pipelineRunFilterReducer } from '../../extend/devconsole/utils/pipeline-filter-reducer';
 
 import { tableFilters } from './table-filters';
 
