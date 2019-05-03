@@ -28,7 +28,7 @@ import 'url-search-params-polyfill';
 // Extensions
 import devConsoleRoutes from '../extend/devconsole/routes';
 import PerspectiveSwitcher from '../extend/devconsole/shared/components/PerspectiveSwitcher';
-import { pathWithPerspective } from './utils/perspective';
+import { pathWithPerspective, PerspectiveFlagMap } from './utils/perspective';
 
 // Extensions
 import devConsoleRoutes from '../extend/devconsole/routes';
@@ -44,7 +44,6 @@ class App extends React.PureComponent {
     this._onResize = this._onResize.bind(this);
     this._onPerspectiveSwitcherClose = this._onPerspectiveSwitcherClose.bind(this);
     this.previousDesktopState = this._isDesktop();
-
     this.state = {
       isNavOpen: this._isDesktop(),
       isPerspectiveSwitcherOpen : false,
@@ -132,7 +131,19 @@ class App extends React.PureComponent {
   }
 
   _prependActivePerspective(path) {
-    return pathWithPerspective(this.props.activePerspective, path);
+    const { flags, activePerspective } = this.props;
+    const activePerspectiveFlagEnabled = flags[PerspectiveFlagMap[activePerspective]];
+    if (flags && !flagPending(activePerspectiveFlagEnabled) && activePerspectiveFlagEnabled) {
+      return pathWithPerspective(activePerspective, path);
+    }
+    return path;
+  }
+
+  _handlePageNotFound({ flags, activePerspective }) {
+    if (activePerspective === 'dev' && flagPending(flags[FLAGS.SHOW_DEV_CONSOLE])) {
+      return <Route component={null} />;
+    }
+    return <LazyRoute loader={() => import('./error' /* webpackChunkName: "error" */).then(m => m.ErrorPage404)} />;
   }
 
   render() {
