@@ -115,19 +115,37 @@ class App extends React.PureComponent {
     }
   }
 
+  showAdminNav() {
+    return this.props.activePerspective === 'admin' || (
+      this.props.activePerspective &&
+      legalPerspectiveNames.includes(this.props.activePerspective) &&
+      this.props.flags[PerspectiveFlagMap[this.props.activePerspective]] ===
+        false &&
+      !flagPending(
+        this.props.flags[PerspectiveFlagMap[this.props.activePerspective]]
+      )
+    );
+  }
+
+  showActivePerspectiveNav(perspective) {
+    return (this.props.activePerspective === perspective &&
+    this.props.flags[PerspectiveFlagMap[perspective]] &&
+    !flagPending(this.props.flags[PerspectiveFlagMap[perspective]]));
+  }
+
+
   _sidebarNav() {
-    if (
-      this.props.flags.SHOW_DEV_CONSOLE &&
-      this.props.activePerspective === 'dev'
-    ) {
+    if (this.showActivePerspectiveNav('dev')) {
       return <DevConsoleNavigation isNavOpen={this.state.isNavOpen} />;
     }
-    return (
-      <Navigation
-        isNavOpen={this.state.isNavOpen}
-        onNavSelect={this._onNavSelect}
-      />
-    );
+    if (this.showAdminNav()) {
+      return (
+        <Navigation
+          isNavOpen={this.state.isNavOpen}
+          onNavSelect={this._onNavSelect}
+        />
+      );
+    }
   }
 
   _prependActivePerspective(path) {
