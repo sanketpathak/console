@@ -64,6 +64,7 @@ export enum FLAGS {
   CLUSTER_VERSION = 'CLUSTER_VERSION',
   MACHINE_CONFIG = 'MACHINE_CONFIG',
   SHOW_DEV_CONSOLE = 'SHOW_DEV_CONSOLE',
+  SHOW_PIPELINE = 'SHOW_PIPELINE',
 }
 
 export const DEFAULTS_ = _.mapValues(FLAGS, flag => flag === FLAGS.AUTH_ENABLED
@@ -79,6 +80,7 @@ export const CRDs = {
   [referenceForModel(OperatorSourceModel)]: FLAGS.OPERATOR_HUB,
   [referenceForModel(MachineModel)]: FLAGS.CLUSTER_API,
   [referenceForModel(MachineConfigModel)]: FLAGS.MACHINE_CONFIG,
+  [referenceForModel(PipelineModel)]: FLAGS.SHOW_PIPELINE,
 };
 
 const SET_FLAG = 'SET_FLAG';
