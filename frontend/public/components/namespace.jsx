@@ -304,6 +304,7 @@ const defaultBookmarks = {};
 const namespaceBarDropdownStateToProps = state => {
   return {
     activeNamespace: state.UI.get('activeNamespace'),
+    activeApplication: getActiveApplication(state),
     activePerspective: getActivePerspective(state),
     canListNS: state[featureReducerName].get(FLAGS.CAN_LIST_NS),
   };

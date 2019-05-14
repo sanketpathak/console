@@ -155,7 +155,6 @@ export class Dropdown extends DropdownMixin {
     this.state.title = props.noSelection
       ? props.title
       : _.get(props.items, props.selectedKey, defaultTitle);
-
     this.onKeyDown = e => this.onKeyDown_(e);
     this.changeTextFilter = e => this.applyTextFilter_(e.target.value, this.props.items);
     const { shortCut } = this.props;
@@ -333,8 +332,10 @@ export class Dropdown extends DropdownMixin {
     const headerBefore = this.props.headerBefore || {};
     const rows = [];
     const bookMarkRows = [];
-
     const addItem = (key, content) => {
+      if (!this.props.items[key]) {
+        return;
+      }
       const selected = (key === selectedKey) && !this.props.noSelection;
       const hover = key === keyboardHoverKey;
       const klass = classNames({'active': selected});
