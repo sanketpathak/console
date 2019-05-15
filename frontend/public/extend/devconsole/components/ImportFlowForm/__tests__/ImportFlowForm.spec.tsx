@@ -78,6 +78,27 @@ describe('ImportFlowForm: ', () => {
     },
   };
 
+  function renderImportForm(args = {}) {
+    const prop = { ...props, ...args };
+    return shallow(<ImportFlowForm {...prop} />);
+  }
+
+  it("shouldn't render git-type", () => {
+    const importFormWrapper = renderImportForm();
+    expect(importFormWrapper.find("FormGroup[controlId='import-git-type']")).toHaveLength(0);
+  });
+
+  it("AppNameSelector to be present", () => {
+    const importFormWrapper = renderImportForm();
+    expect(importFormWrapper.find("AppNameSelector")).toHaveLength(1);
+    expect(importFormWrapper.find("AppNameSelector").prop("namespace")).toBe("default");
+  });
+
+  it("Form Submit Button should be disabled", () => {
+    const importFormWrapper = renderImportForm();
+    expect(importFormWrapper.find("Button").at(0).prop('disabled')).toBeTruthy();
+  });
+
   it('renders', () => {
     const importFlowForm = shallow(<ImportFlowForm {...props} />);
 
