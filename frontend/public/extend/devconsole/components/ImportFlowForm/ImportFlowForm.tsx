@@ -78,6 +78,7 @@ enum ErrorMessage {
   BuilderImageError = 'We failed to detect the builder image. Please select an appropriate image.',
   GitUrlError = 'Please enter a valid git URL.',
   GitTypeError = 'We failed to detect the git type. Please choose a git type.',
+  NamespaceNotSelected = 'Please select a Namespace to continue.',
 }
 
 const getUrlErrorMessage = (errorType: ErrorMessage) =>
@@ -186,7 +187,13 @@ export class ImportFlowForm extends React.Component<Props, State> {
   };
 
   onNamespaceChange = (namespace: string) => {
-    this.setState({ namespace });
+    this.setState(({ gitRepoUrlError }) => {
+      const error = gitRepoUrlError !== ErrorMessage.NamespaceNotSelected ? gitRepoUrlError : '';
+      return {
+        namespace,
+        gitRepoUrlError: error,
+      };
+    }, this.validateGitRepo);
   };
 
   onApplicationChange = (application: string, selectedKey: string) => {
@@ -251,6 +258,10 @@ export class ImportFlowForm extends React.Component<Props, State> {
   }
 
   validateGitRepo = (): void => {
+    if (!this.state.namespace) {
+      this.setState({ gitRepoUrlError: ErrorMessage.NamespaceNotSelected });
+      return;
+    }
     if (
       this.state.lastEnteredGitUrl !== this.state.gitRepoUrl &&
       this.state.gitRepoUrlError === ''
