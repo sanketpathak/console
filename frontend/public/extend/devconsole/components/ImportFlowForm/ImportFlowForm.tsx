@@ -577,6 +577,7 @@ export class ImportFlowForm extends React.Component<Props, State> {
           selectedImage={selectedImage}
           recommendedImage={recommendedImage}
           onImageChange={this.onBuilderImageChange}
+          data-test-id="builder-image-selector"
         />
         {selectedImage && (
           <BuilderImageTagSelector
