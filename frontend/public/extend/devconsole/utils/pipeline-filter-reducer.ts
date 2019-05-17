@@ -6,8 +6,20 @@ export const pipelineFilterReducer = (pipeline): string => {
 };
 
 export const pipelineRunFilterReducer = (pipelineRun): string => {
-  if (!pipelineRun.status || !pipelineRun.status.conditions[0].type) {
-    return '';
+  if (
+    !pipelineRun ||
+    !pipelineRun.status ||
+    !pipelineRun.status.conditions ||
+    pipelineRun.status.conditions.length === 0
+  ) {
+    return '-';
   }
-  return pipelineRun.status.conditions[0].type;
+  const condition = pipelineRun.status.conditions.find((c) => c.type === 'Succeeded');
+  return !condition || !condition.status
+    ? '-'
+    : condition.status === 'True'
+      ? 'Succeeded'
+      : condition.status === 'False'
+        ? 'Failed'
+        : 'Running';
 };
