@@ -26,6 +26,8 @@ import {
 } from '../models';
 import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
 import { getActivePerspective } from '../ui/ui-selectors';
+import AppNameSelector from '../extend/devconsole/shared/components/dropdown/AppNameSelector';
+import { getAppLabels } from '../extend/devconsole/utils/resource-label-utils';
 
 const getSuggestedName = name => {
   if (!name) {
@@ -59,6 +61,8 @@ export class DeployImage_ extends React.Component<DeployImageProps & DeployImage
 
     this.state = {
       namespace,
+      application: '',
+      selectedApplicationKey: '',
       imageName: '',
       loading: false,
       inProgress: false,
@@ -72,6 +76,10 @@ export class DeployImage_ extends React.Component<DeployImageProps & DeployImage
 
   onNamespaceChange = (namespace: string) => {
     this.setState({namespace});
+  };
+
+  onApplicationChange = (application: string, selectedKey: string) => {
+    this.setState({ application, selectedApplicationKey: selectedKey });
   };
 
   onImageNameChange: React.ReactEventHandler<HTMLInputElement> = event => {
@@ -158,7 +166,6 @@ export class DeployImage_ extends React.Component<DeployImageProps & DeployImage
 
   save = event => {
     event.preventDefault();
-
     this.setState({
       inProgress: true,
       error: null,
@@ -328,6 +335,12 @@ export class DeployImage_ extends React.Component<DeployImageProps & DeployImage
             <NsDropdown selectedKey={this.state.namespace} onChange={this.onNamespaceChange} id="dropdown-selectbox" />
           </div>
           <p>Deploy an existing image from an {/*image stream tag or */} image registry.</p>
+          <AppNameSelector
+            application={this.state.application}
+            namespace={this.state.namespace}
+            selectedKey={this.state.selectedApplicationKey}
+            onChange={this.onApplicationChange}
+          />
           <div className="form-group co-deploy-image__image-name">
             <label className="control-label co-required" htmlFor="image-name">Image Name</label>
             <div className="input-group">
@@ -427,7 +440,7 @@ export class DeployImage_ extends React.Component<DeployImageProps & DeployImage
             </React.Fragment>}
           </div>
           <ButtonBar errorMessage={this.state.error} inProgress={this.state.inProgress}>
-            <button type="submit" className="btn btn-primary" disabled={!this.state.namespace || !this.state.imageName || !this.state.name}>Deploy</button>
+            <button type="submit" className="btn btn-primary" disabled={!this.state.namespace || !this.state.imageName || !this.state.name || !this.state.application}>Deploy</button>
             <PerspectiveLink to={formatNamespacedRouteForResource('deploymentconfigs')} className="btn btn-default">Cancel</PerspectiveLink>
           </ButtonBar>
         </form>
