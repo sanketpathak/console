@@ -9,6 +9,84 @@ import {
   TopologyDataObject,
   WorkloadData,
 } from './topology-types';
+import {} from 'moment';
+
+export const podColor = {
+  Running: '#0066CC',
+  'Not Ready': '#519DE9',
+  Warning: '#F0AB00',
+  Empty: '#FFFFFF',
+  Failed: '#CC0000',
+  Pending: '#8BC1F7',
+  Succceeded: '#519149',
+  Terminating: '#002F5D',
+  Unknown: '#A18FFF',
+};
+
+export const podStatus = Object.keys(podColor);
+
+function numContainersReadyFilter(pod) {
+  let numReady = 0;
+  _.forEach(pod.status.containerStatuses, function(status) {
+    if (status.ready) {
+      numReady++;
+    }
+  });
+  return numReady;
+}
+
+function isReady(pod) {
+  const numReady = numContainersReadyFilter(pod);
+  const total = _.size(pod.spec.containers);
+
+  return numReady === total;
+}
+
+function isContainerFailedFilter(containerStatus) {
+  return containerStatus.state.terminated && containerStatus.state.terminated.exitCode !== 0;
+}
+
+function isContainerLoopingFilter(containerStatus) {
+  return (
+    containerStatus.state.waiting && containerStatus.state.waiting.reason === 'CrashLoopBackOff'
+  );
+}
+
+function podWarnings(pod) {
+  if (pod.status.phase === 'Running' && pod.status.containerStatuses) {
+    _.each(pod.status.containerStatuses, function(containerStatus) {
+      if (!containerStatus.state) {
+        return null;
+      }
+
+      if (isContainerFailedFilter(containerStatus)) {
+        if (_.has(pod, 'metadata.deletionTimestamp')) {
+          return 'Failed';
+        }
+        return 'Warning';
+
+      }
+      if (isContainerLoopingFilter(containerStatus)) {
+        return 'Failed';
+      }
+    });
+  }
+  return null;
+}
+
+export function getPodStatus(pod) {
+  if (_.has(pod, 'metadata.deletionTimestamp')) {
+    return 'Terminating';
+  }
+  const warning = podWarnings(pod);
+  if (warning !== null) {
+    return warning;
+  }
+  if (pod.status.phase === 'Running' && !isReady(pod)) {
+    return 'Not Ready';
+  }
+  return _.get(pod, 'status.phase', 'Unknown');
+}
 
 export class TransformTopologyData {
   private _topologyData: TopologyDataModel = {
@@ -90,12 +168,12 @@ export class TransformTopologyData {
           return resource;
         }),
         data: {
-          url: !_.isEmpty(route.spec) ? getRouteWebURL(route): null,
+          url: !_.isEmpty(route.spec) ? getRouteWebURL(route) : null,
           editUrl: deploymentsAnnotations['app.openshift.io/edit-url'],
           builderImage: deploymentsLabels['app.kubernetes.io/name'],
           donutStatus: {
             pods: _.map(dcPods, (pod) =>
-              _.merge(_.pick(pod, 'metadata', 'status'), {
+              _.merge(_.pick(pod, 'metadata', 'status', 'spec.containers'), {
                 id: _.get(pod, 'metadata.uid'),
                 name: _.get(pod, 'metadata.name'),
                 kind: 'Pod',
