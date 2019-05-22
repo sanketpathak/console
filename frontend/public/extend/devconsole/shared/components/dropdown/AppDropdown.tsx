@@ -17,7 +17,7 @@ interface AppDropdownProps {
   allSelectorItem?: {
     allSelectorKey?: string;
     allSelectorTitle?: string;
-  }
+  };
   namespace?: string;
   actionItem?: {
     actionTitle: string;
@@ -47,7 +47,7 @@ const AppDropdown: React.FC<AppDropdownProps> = (props) => {
       <LabelDropdown
         {...props}
         placeholder="Select an Application"
-        labelSelector="app.kubernetes.io/part-of"
+        dataSelector={['metadata', 'labels', 'app.kubernetes.io/part-of']}
       />
     </Firehose>
   );

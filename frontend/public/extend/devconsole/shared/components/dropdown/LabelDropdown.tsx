@@ -2,9 +2,9 @@
 import * as _ from 'lodash-es';
 import * as React from 'react';
 import * as fuzzy from 'fuzzysearch';
-
 import { Dropdown, LoadingInline } from '../../../../../components/utils';
 import { K8sResourceKind } from '../../../../../module/k8s';
+import { Many } from 'lodash';
 
 type FirehoseList = {
   data?: K8sResourceKind[];
@@ -34,12 +34,13 @@ interface LabelDropdownProps {
     actionTitle: string;
     actionKey: string;
   };
-  labelSelector: string;
+  dataSelector: Many<string | number | symbol>;
   loaded?: boolean;
   loadError?: string;
   placeholder?: string;
   resources?: FirehoseList[];
   selectedKey: string;
+  resourceFilter?: (resource: any) => boolean;
   onChange?: (name: string, key: string) => void;
 }
 
@@ -65,7 +66,7 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
   }
 
   componentWillReceiveProps(nextProps: LabelDropdownProps) {
-    const { labelSelector, resources, loaded, loadError, placeholder, allSelectorItem } = nextProps;
+    const { resources, loaded, loadError, placeholder, allSelectorItem } = nextProps;
     if (!loaded) {
       this.setState({ title: <LoadingInline /> });
       return;
@@ -83,14 +84,18 @@ class LabelDropdown extends React.Component<LabelDropdownProps, LabelDropdownSta
     }
 
     const unsortedList = {};
+    let labelValue = '';
     _.each(resources, ({ data }) => {
       _.reduce(
         data,
         (acc, resource) => {
-          if (resource.metadata.labels && resource.metadata.labels.hasOwnProperty(labelSelector)) {
-            acc[resource.metadata.labels[labelSelector]] = {
-              name: resource.metadata.labels[labelSelector],
-            };
+          if (this.props.resourceFilter && this.props.resourceFilter(resource)) {
+            labelValue = _.get(resource, this.props.dataSelector);
+          } else if (!this.props.resourceFilter) {
+            labelValue = _.get(resource, this.props.dataSelector);
+          }
+          if (labelValue) {
+            acc[labelValue] = { name: labelValue };
           }
           return acc;
         },
