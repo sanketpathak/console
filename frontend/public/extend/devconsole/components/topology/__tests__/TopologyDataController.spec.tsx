@@ -15,7 +15,7 @@ describe('TopologyDataController', () => {
   };
   let wrapper: ShallowWrapper<TopologyDataControllerProps>;
   beforeEach(() => {
-    wrapper = shallow(<TopologyDataController namespace="namespace" {...props} />);
+    wrapper = shallow(<TopologyDataController application={undefined} namespace="namespace" {...props} />);
   });
 
   it('renders a topologyDataController', () => {

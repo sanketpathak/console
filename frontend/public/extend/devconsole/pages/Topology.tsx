@@ -6,11 +6,15 @@ import ODCEmptyState from '../shared/components/EmptyState/EmptyState';
 import { StatusBox } from '../../../components/utils';
 import TopologyDataController, { RenderProps } from '../components/topology/TopologyDataController';
 import Topology from '../components/topology/Topology';
+import { connect } from 'react-redux';
+import { getActiveApplication } from '../../../ui/ui-selectors';
+import { ALL_APPLICATIONS_KEY } from '../../../const';
 
 export interface TopologyPageProps {
   match: RMatch<{
     ns?: string;
   }>;
+  activeApplication: string;
 }
 
 const EmptyMsg = () => <ODCEmptyState title="Topology" />;
@@ -41,16 +45,16 @@ export function renderTopology({ loaded, loadError, data }: RenderProps) {
   );
 }
 
-const TopologyPage: React.FC<TopologyPageProps> = ({ match }) => {
+const TopologyPage: React.FC<TopologyPageProps> = ({ match, activeApplication }) => {
   const namespace = match.params.ns;
-
+  const application = activeApplication === ALL_APPLICATIONS_KEY ? undefined : activeApplication;
   return (
     <React.Fragment>
       <Helmet>
         <title>Topology</title>
       </Helmet>
       {namespace ? (
-        <TopologyDataController namespace={namespace} render={renderTopology} />
+        <TopologyDataController application={application} namespace={namespace} render={renderTopology} />
       ) : (
         <EmptyMsg />
       )}
@@ -58,4 +62,10 @@ const TopologyPage: React.FC<TopologyPageProps> = ({ match }) => {
   );
 };
 
-export default TopologyPage;
+const mapStateToProps = (state) => {
+  return {
+    activeApplication: getActiveApplication(state),
+  };
+};
+
+export default connect(mapStateToProps)(TopologyPage);

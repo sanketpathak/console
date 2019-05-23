@@ -9,7 +9,6 @@ import {
   TopologyDataObject,
   WorkloadData,
 } from './topology-types';
-import {} from 'moment';
 
 export const podColor = {
   Running: '#0066CC',
@@ -106,7 +105,7 @@ export class TransformTopologyData {
   private _selectorsByService;
   private _allServices;
 
-  constructor(public resources: TopologyDataResources) {
+  constructor(public resources: TopologyDataResources, public application?: string) {
     this._allServices = _.keyBy(this.resources.services.data, 'metadata.name');
     this._selectorsByService = this.getSelectorsByService();
   }
@@ -137,7 +136,10 @@ export class TransformTopologyData {
     }
     const targetDeploymentsKind = this._deploymentKindMap[targetDeployment].dcKind;
 
-    _.forEach(this.resources[targetDeployment].data, (deploymentConfig) => {
+    // filter data based on the active application
+    const resourceData = this.filterBasedOnActiveApplication(this.resources[targetDeployment].data);
+
+    _.forEach(resourceData, (deploymentConfig) => {
       deploymentConfig.kind = targetDeploymentsKind;
       const dcUID = _.get(deploymentConfig, 'metadata.uid');
 
@@ -184,6 +186,21 @@ export class TransformTopologyData {
       } as TopologyDataObject<WorkloadData>;
     });
     return this;
+  }
+
+  /**
+   * filter data based on the active application
+   * @param data
+   */
+  private filterBasedOnActiveApplication(data) {
+    const PART_OF = 'app.kubernetes.io/part-of';
+    if (!this.application) {
+      return data;
+    }
+    return data.filter(dc => {
+      return dc.metadata.labels[PART_OF] && dc.metadata.labels[PART_OF] === this.application;
+    });
+
   }
 
   /**
