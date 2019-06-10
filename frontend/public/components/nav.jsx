@@ -32,6 +32,7 @@ export const matchesModel = (resourcePath, model) => model && matchesPath(resour
 
 import { Nav, NavExpandable, NavItem, NavList, PageSidebar } from '@patternfly/react-core';
 import PerspectiveLink from '../extend/devconsole/shared/components/PerspectiveLink';
+import SideBarHeader from '../extend/devconsole/shared/components/SideBarHeader';
 
 export const stripNS = href => {
   href = stripBasePath(href);
