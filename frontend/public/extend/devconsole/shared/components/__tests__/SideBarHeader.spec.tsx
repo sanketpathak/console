@@ -16,25 +16,15 @@ describe('SideBarHeader Tests: ', () => {
   it('should show Developer header when active perspective is dev', () => {
     mockServerFlags({ kubeAPIServerURL: 'https://api.rohit32.devcluster.openshift.com:6443' });
     const shallowSideBar = shallow(<SideBarHeader activePerspective={'dev'} />);
-    expect(
-      shallowSideBar.contains(
-        <React.Fragment>
-          <CodeIcon /> Developer
-        </React.Fragment>,
-      ),
-    ).toEqual(true);
+    expect(shallowSideBar.find(CodeIcon)).toHaveLength(1);
+    expect(shallowSideBar.find(CogsIcon)).toHaveLength(0);
   });
 
   it('should show Administrator header when active perspective is admin', () => {
     mockServerFlags({ kubeAPIServerURL: 'https://api.rohit32.devcluster.openshift.com:6443' });
     const shallowSideBar = shallow(<SideBarHeader activePerspective={'admin'} />);
-    expect(
-      shallowSideBar.contains(
-        <React.Fragment>
-          <CogsIcon /> Administrator
-        </React.Fragment>
-      ),
-    ).toEqual(true);
+    expect(shallowSideBar.find(CodeIcon)).toHaveLength(0);
+    expect(shallowSideBar.find(CogsIcon)).toHaveLength(1);
   });
 
   it('connectedSideBarHeader should pass activePerspective as prop', () => {
